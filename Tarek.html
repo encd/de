@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AES-256 Encrypt/Decrypt</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column; /* Arrange elements vertically */
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 114px; /* Increased height by 10px */
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 3px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            background-color: #f8f8f8;
+            min-height: 100px;
+            padding: 10px;
+            margin-top: 0px; /* Increased margin-top to move Result lower */
+            border-radius: 4px;
+            overflow-y: auto;
+        }
+        .copy-btn {
+            background-color: #008CBA;
+            margin-top:-5px;
+        }
+        .clear-btn-container {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 0;
+            gap: 5px; /* Reduced space between the button and text field */
+        }
+        .clear-btn-container button {
+            margin: 0;
+            padding: 10px 15px;
+        }
+        .result-button-container {
+            margin-top: 10px; /* Space between result and copy button */
+        }
+        /* Spacing between Encrypt and Decrypt buttons */
+        .button-container {
+            margin-bottom: 15px; /* Added margin for space between buttons and result */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>AES-256 Encryption/Decryption Tool</h2>
+
+        <!-- Textbox with Clear button right beside it -->
+        <div class="input-group">
+            <label for="textInput">Enter Text:</label>
+            <textarea id="textInput" rows="4"></textarea>
+            <div class="clear-btn-container">
+                <button onclick="clearTextInput()">Clear</button>
+            </div>
+        </div>
+
+        <!-- Secret Key input below -->
+        <div class="input-group">
+            <label for="secretKey">Secret Key:</label>
+            <input type="text" id="secretKey" required>
+        </div>
+
+        <!-- Buttons: Encrypt and Decrypt -->
+        <div class="button-container">
+            <button onclick="encryptText()">Encrypt</button>
+            <button onclick="decryptText()">Decrypt</button>
+        </div>
+
+        <!-- Result with label closer to the text field -->
+        <div class="input-group">
+            <label>Result:</label>
+            <div id="result"></div>
+        </div>
+
+        <!-- Result button (Copy button) container with space -->
+        <div class="result-button-container">
+            <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copyResult()">Copy Encrypted Text</button>
+        </div>
+    </div>
+
+    <script>
+        // Additional Key (Fixed in Code)
+        const additionalKey = "MyFixedAdditionalKey123!@#TarekHira";  // নিজের মতো করে পরিবর্তন করুন
+
+        function encryptText() {
+            const text = document.getElementById('textInput').value;
+            const secretKey = document.getElementById('secretKey').value;
+
+            if (!secretKey) {
+                alert('Please enter the secret key!');
+                return;
+            }
+
+            // Combine Secret Key and Additional Key
+            const combinedKey = secretKey + additionalKey;
+
+            // Encrypt using AES-256
+            const encrypted = CryptoJS.AES.encrypt(text, combinedKey).toString();
+            document.getElementById('result').textContent = encrypted;
+
+            // Show the Copy button after encryption
+            document.getElementById('copyBtn').style.display = 'inline-block';
+        }
+
+        function decryptText() {
+            const text = document.getElementById('textInput').value;
+            const secretKey = document.getElementById('secretKey').value;
+
+            if (!secretKey) {
+                alert('Please enter the secret key!');
+                return;
+            }
+
+            // Combine Secret Key and Additional Key
+            const combinedKey = secretKey + additionalKey;
+
+            try {
+                // Decrypt using AES-256
+                const decrypted = CryptoJS.AES.decrypt(text, combinedKey).toString(CryptoJS.enc.Utf8);
+                
+                if (!decrypted) throw new Error("Decryption failed!");
+                
+                document.getElementById('result').textContent = decrypted;
+
+                // Hide the Copy button after decryption
+                document.getElementById('copyBtn').style.display = 'none';
+            } catch (error) {
+                alert("Decryption failed! Please check your secret key or encrypted text.");
+            }
+        }
+
+        function copyResult() {
+            const result = document.getElementById('result');
+            const textarea = document.createElement('textarea');
+            textarea.value = result.textContent;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Encrypted text copied to clipboard!');
+        }
+
+        function clearTextInput() {
+            document.getElementById('textInput').value = ''; // Clear the text input
+            document.getElementById('result').textContent = ''; // Clear the result
+            document.getElementById('copyBtn').style.display = 'none'; // Hide copy button
+        }
+    </script>
+</body>
+</html>
