@@ -39,11 +39,14 @@
             box-sizing: border-box;
             font-family: 'Roboto', sans-serif;
             font-size: 16px;
-            font-style: italic;
         }
         textarea {
             height: 120px;
-            font-family: Arial, sans-serif;
+            resize: none;
+        }
+        textarea::placeholder {
+        
+            font-style: italic;
         }
         button {
             padding: 10px 20px;
@@ -170,7 +173,7 @@
         <!-- Textbox with Clear button -->
         <div class="input-group">
             <label for="textInput">Enter Text:</label>
-            <textarea id="textInput" rows="4" aria-label="Enter text to be encrypted or decrypted"></textarea>
+            <textarea placeholder="Enter text here..." id="textInput" rows="4" aria-label="Enter text to be encrypted or decrypted"></textarea>
             <div class="clear-btn-container">
                 <button onclick="clearTextInput()">Clear</button>
             </div>
